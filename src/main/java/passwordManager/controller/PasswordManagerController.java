@@ -8,6 +8,7 @@ import passwordManager.dtos.request.PasswordCreateRequest;
 import passwordManager.dtos.request.UpdateRequest;
 import passwordManager.dtos.request.dtos.GetPasswordResponse;
 import passwordManager.exceptions.IncorrectPasswordException;
+import passwordManager.exceptions.PasswordNotFoundException;
 import passwordManager.services.PasswordServices;
 
 @RestController
@@ -16,28 +17,34 @@ public class PasswordManagerController {
     @Autowired
     private PasswordServices passwordServices;
         @PostMapping
-        public void addPassword(@RequestParam PasswordCreateRequest passwordCreateRequest) {
+        public String addPassword(@RequestBody PasswordCreateRequest passwordCreateRequest) {
             passwordServices.addPassword(passwordCreateRequest);
+            return "Password added";
         }
 
         @GetMapping("/{website}")
-        public GetPasswordResponse getPassword(@PathVariable GetPasswordRequest website) {
-              return  passwordServices.getPassword(website);
+        public GetPasswordResponse getPassword(@RequestBody GetPasswordRequest website) {
+            return passwordServices.getPassword(website);
         }
 
         @PutMapping("/{website}")
-        public String updatePassword(@RequestParam UpdateRequest updateRequest) {
+        public String updatePassword(@RequestBody UpdateRequest updateRequest) {
             try{
                 passwordServices.updatePassword(updateRequest);
-                return "password updated successfully";
+                return "Password updated successfully";
             }catch (IncorrectPasswordException e){
                 return e.getMessage();
             }
         }
 
         @DeleteMapping("/{website}")
-        public void deletePassword(@PathVariable DeleteRequest website) {
+        public String deletePassword(@RequestBody DeleteRequest website) {
+            try{
            passwordServices.deletePassword(website);
+           return "Password deleted";
+        }catch (PasswordNotFoundException e){
+            return e.getMessage();
+            }
         }
     }
 
