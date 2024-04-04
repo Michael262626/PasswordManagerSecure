@@ -13,6 +13,7 @@ import passwordManager.dtos.request.dtos.GetPasswordResponse;
 import passwordManager.dtos.request.dtos.Response;
 import passwordManager.dtos.request.dtos.UpdateResponse;
 import passwordManager.exceptions.IncorrectPasswordException;
+import passwordManager.exceptions.PasswordExistException;
 import passwordManager.exceptions.PasswordNotFoundException;
 
 import java.util.Optional;
@@ -27,12 +28,12 @@ public class PasswordServicesImpl implements PasswordServices {
 
     @Override
     public Response addPassword(PasswordCreateRequest passwordCreateRequest) {
+        if(isPasswordExisting(passwordCreateRequest.getPassword())) throw new PasswordExistException("Password already exist");
         Password password = map(passwordCreateRequest);
         Response result = map(password);
         passwords.save(password);
         return result;
     }
-
 
 
     @Override
@@ -76,6 +77,13 @@ public class PasswordServicesImpl implements PasswordServices {
         if (foundPassword == null) throw new PasswordNotFoundException(String.format("%s not found", website));
         return foundPassword;
     }
-
+    private boolean isPasswordExisting(String foundPassword){
+        for (Password password : passwords.findAll()) {
+            if (password.getPasswords().containsValue(foundPassword)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
 
