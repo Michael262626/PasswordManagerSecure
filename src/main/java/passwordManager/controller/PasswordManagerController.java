@@ -5,24 +5,23 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import passwordManager.data.model.Password;
-import passwordManager.dtos.request.DeleteRequest;
-import passwordManager.dtos.request.GetPasswordRequest;
-import passwordManager.dtos.request.PasswordCreateRequest;
-import passwordManager.dtos.request.UpdateRequest;
+import passwordManager.dtos.request.*;
 import passwordManager.dtos.request.dtos.ApiResponse;
 import passwordManager.dtos.request.dtos.GetPasswordResponse;
 import passwordManager.exceptions.IncorrectPasswordException;
 import passwordManager.exceptions.PasswordNotFoundException;
 import passwordManager.services.PasswordServices;
+import passwordManager.services.UserServices;
 
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
-import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.*;
 
 @RestController
 @RequestMapping("/passwords")
 public class PasswordManagerController {
     @Autowired
     private PasswordServices passwordServices;
+    @Autowired
+    private UserServices userServices;
         @PostMapping
         public ResponseEntity<?> addPassword(@RequestBody PasswordCreateRequest passwordCreateRequest) {
             try{
@@ -62,5 +61,23 @@ public class PasswordManagerController {
                 return new ResponseEntity<>(new ApiResponse(false,e.getMessage()),BAD_REQUEST);
             }
         }
+    @PatchMapping("/logout/user")
+    public ResponseEntity<?> logoutUser(@RequestBody LogoutRequest logoutRequest) {
+        try {
+            userServices.logout(logoutRequest);
+            return new ResponseEntity<>(new ApiResponse(true, NO_CONTENT), CREATED);
+        }catch(Exception e){
+            return new ResponseEntity<>(new ApiResponse(false,e.getMessage()),BAD_REQUEST);
+        }
     }
+    @PatchMapping("/login/user")
+    public ResponseEntity<?> loginUser(@RequestBody LoginRequest loginRequest){
+        try{
+            userServices.login(loginRequest);
+            return new ResponseEntity<>(new ApiResponse(true, NO_CONTENT), CREATED);
+        }catch(Exception e){
+            return new ResponseEntity<>(new ApiResponse(false,e.getMessage()),BAD_REQUEST);
+        }
+    }
+}
 

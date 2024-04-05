@@ -1,20 +1,18 @@
 package passwordManager.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import passwordManager.data.model.Password;
+import passwordManager.data.model.User;
 import passwordManager.data.repository.Passwords;
-import passwordManager.dtos.request.DeleteRequest;
-import passwordManager.dtos.request.GetPasswordRequest;
-import passwordManager.dtos.request.PasswordCreateRequest;
-import passwordManager.dtos.request.UpdateRequest;
+import passwordManager.data.repository.Users;
+import passwordManager.dtos.request.*;
 import passwordManager.dtos.request.dtos.DeletePasswordResponse;
 import passwordManager.dtos.request.dtos.GetPasswordResponse;
 import passwordManager.dtos.request.dtos.Response;
 import passwordManager.dtos.request.dtos.UpdateResponse;
-import passwordManager.exceptions.IncorrectPasswordException;
-import passwordManager.exceptions.PasswordExistException;
-import passwordManager.exceptions.PasswordNotFoundException;
+import passwordManager.exceptions.*;
 
 import java.util.Optional;
 
@@ -27,17 +25,17 @@ public class PasswordServicesImpl implements PasswordServices {
     Passwords passwords;
 
     @Override
-    public Response addPassword(PasswordCreateRequest passwordCreateRequest) {
+    public Response addPassword(PasswordCreateRequest passwordCreateRequest) throws Exception {
         if(isPasswordExisting(passwordCreateRequest.getPassword())) throw new PasswordExistException("Password already exist");
         Password password = map(passwordCreateRequest);
-        Response result = map(password);
         passwords.save(password);
+        Response result = map(password);
         return result;
     }
 
 
     @Override
-    public GetPasswordResponse getPassword(GetPasswordRequest website) {
+    public GetPasswordResponse getPassword(GetPasswordRequest website) throws Exception {
         Password optionalPassword = passwords.findByWebsite(website.getWebsite());
         GetPasswordResponse result = map3(optionalPassword);
             if (optionalPassword.getPassword() == null || optionalPassword.getPassword().isEmpty()) {
@@ -45,6 +43,7 @@ public class PasswordServicesImpl implements PasswordServices {
             }
             return result;
     }
+
 
     @Override
     public DeletePasswordResponse deletePassword(DeleteRequest deleteRequest) {
