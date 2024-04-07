@@ -13,7 +13,7 @@ public class AESEncryption {
         this.secretKey = generateSecretKey();
     }
     public String encrypt(String plaintext) throws Exception {
-        Cipher cipher = Cipher.getInstance("AES");
+        Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
 
         cipher.init(Cipher.ENCRYPT_MODE, secretKey);
         byte[] encryptedBytes = cipher.doFinal(plaintext.getBytes());
@@ -21,9 +21,7 @@ public class AESEncryption {
     }
 
     public String decrypt(String encryptedText) throws Exception {
-
-        Cipher cipher = Cipher.getInstance("AES");
-
+        Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
         cipher.init(Cipher.DECRYPT_MODE, secretKey);
         byte[] encryptedBytes = Base64.getDecoder().decode(encryptedText);
         byte[] decryptedBytes = cipher.doFinal(encryptedBytes);
@@ -32,7 +30,7 @@ public class AESEncryption {
 
     private SecretKey generateSecretKey() throws Exception {
         KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");
-        keyGenerator.init(256); // Use 256-bit key size for AES
+        keyGenerator.init(256);
         return keyGenerator.generateKey();
     }
 }

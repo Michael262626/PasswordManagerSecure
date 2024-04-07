@@ -37,11 +37,11 @@ public class PasswordServicesImpl implements PasswordServices {
     @Override
     public GetPasswordResponse getPassword(GetPasswordRequest website) throws Exception {
         Password optionalPassword = passwords.findByWebsite(website.getWebsite());
+        if (optionalPassword == null ||  optionalPassword.getPassword().isEmpty()) {
+            throw new IncorrectPasswordException("Password was not found for website: " + website);
+        }
         GetPasswordResponse result = map3(optionalPassword);
-            if (optionalPassword.getPassword() == null || optionalPassword.getPassword().isEmpty()) {
-                throw new IncorrectPasswordException("Password was not found for website: " + website);
-            }
-            return result;
+        return result;
     }
 
 

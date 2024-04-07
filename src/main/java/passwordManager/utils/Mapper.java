@@ -60,9 +60,9 @@ public class Mapper {
         return deletePasswordResponse;
     }
     public static GetPasswordResponse map3(Password password) throws Exception {
-        validate(aesEncryption.decrypt(password.getPassword()));
+        validate(password.getPassword());
         GetPasswordResponse getPasswordResponse = new GetPasswordResponse();
-        getPasswordResponse.setPassword(password.getPassword());
+        getPasswordResponse.setPassword(aesEncryption.decrypt(password.getPassword()));
         return getPasswordResponse;
     }
 }

@@ -55,8 +55,8 @@ public class PasswordManagerController {
         @DeleteMapping("/{delete}")
         public ResponseEntity<?> deletePassword(@RequestBody DeleteRequest website) {
             try{
-           var result = passwordServices.deletePassword(website);
-                return new ResponseEntity<>(new ApiResponse(true,result), CREATED);
+                passwordServices.deletePassword(website);
+                return new ResponseEntity<>(new ApiResponse(true,"DELETED SUCCESSFULLY"), CREATED);
             }catch(Exception e){
                 return new ResponseEntity<>(new ApiResponse(false,e.getMessage()),BAD_REQUEST);
             }
