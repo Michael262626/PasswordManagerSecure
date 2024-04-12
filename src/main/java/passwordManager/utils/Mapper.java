@@ -1,7 +1,4 @@
 package passwordManager.utils;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import passwordManager.data.model.Password;
 import passwordManager.dtos.request.PasswordCreateRequest;
 import passwordManager.dtos.request.UpdateRequest;

@@ -19,7 +19,6 @@ public class AESEncryption {
         byte[] encryptedBytes = cipher.doFinal(plaintext.getBytes());
         return Base64.getEncoder().encodeToString(encryptedBytes);
     }
-
     public String decrypt(String encryptedText) throws Exception {
         Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
         cipher.init(Cipher.DECRYPT_MODE, secretKey);
@@ -27,7 +26,6 @@ public class AESEncryption {
         byte[] decryptedBytes = cipher.doFinal(encryptedBytes);
         return new String(decryptedBytes);
     }
-
     private SecretKey generateSecretKey() throws Exception {
         KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");
         keyGenerator.init(256);
